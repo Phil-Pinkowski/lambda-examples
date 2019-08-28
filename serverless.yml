@@ -1,0 +1,69 @@
+service: example
+
+provider:
+  name: aws
+  region: eu-west-1
+
+functions:
+  node:
+    runtime: nodejs10.x
+    handler: node-js/lambda.handler
+    package:
+      exclude:
+        - "*"
+      include:
+        - node-js/node_modules
+    name: node-lambda
+    events:
+      - http:
+          path: node-js
+          method: post
+
+  java:
+    runtime: java8
+    handler: example.JavaHandler
+    package:
+      artifact: java-kotlin/build/libs/example-1.0-SNAPSHOT-all.jar
+    name: java
+    events:
+      - http:
+          path: java
+          method: post
+
+  kotlin:
+    runtime: java8
+    handler: example.KotlinHandler
+    package:
+      artifact: java-kotlin/build/libs/example-1.0-SNAPSHOT-all.jar
+    name: kotlin
+    events:
+      - http:
+          path: kotlin
+          method: post
+
+  c-sharp:
+    runtime: dotnetcore2.1
+    handler: Example::Example.Handler::Handle
+    package:
+      artifact: c-sharp/Example/Example/Example.zip
+    name: c-sharp
+    events:
+      - http:
+          path: c-sharp
+          method: post
+
+  r:
+    runtime: provided
+    handler: r/lambda.handler
+    layers:
+      - arn:aws:lambda:eu-west-1:131329294410:layer:r-runtime-3_6_0:12
+      - arn:aws:lambda:eu-west-1:131329294410:layer:r-recommended-3_6_0:12
+    name: r
+    integration: lambda
+    response:
+      template:
+        application/json: '{ "statusCode" : 200, "body": "$input.path(''$'')" }'
+    events:
+      - http:
+          path: r
+          method: post

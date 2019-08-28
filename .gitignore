@@ -1,0 +1,9 @@
+.vs
+.idea
+build
+bin
+obj
+.serverless
+.gradle
+node_modules
+*.zip
